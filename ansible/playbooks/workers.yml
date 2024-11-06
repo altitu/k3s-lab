@@ -1,0 +1,6 @@
+---
+- hosts: workers
+  become: yes
+  roles:
+    - common
+    - k3s-worker
