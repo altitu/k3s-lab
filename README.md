@@ -36,3 +36,8 @@ You will be prompted for a password, by default Vagrant uses `vagrant` for its u
 - To delete all data on the VMs, run `vagrant destroy -f`
 
 The result will be a Kubernetes environment with K3s installed on the master and worker nodes.
+
+# Tips
+## Adding Grafana
+
+- To automaticaly add the structure of the Grafana role, we placed ourselves in `ansible/roles` and Ran `ansible-galaxy init grafana`
