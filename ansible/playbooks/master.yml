@@ -2,5 +2,5 @@
 - hosts: master
   become: yes
   roles:
-    - common
-    - k3s-master
+    - ../roles/common
+    - ../roles/k3s-master

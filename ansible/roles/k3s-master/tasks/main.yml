@@ -13,3 +13,9 @@
     content: "{{ k3s_token.stdout }}"
     dest: "/tmp/k3s_token"
     mode: "0644"
+
+- name: Retrieve the Tokenfile locally
+  fetch:
+    src: "/tmp/k3s_token"
+    dest: "/tmp/k3s_token"
+    flat: true
