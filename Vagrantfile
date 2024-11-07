@@ -17,12 +17,13 @@ Vagrant.configure("2") do |config|
       ansible.playbook = "ansible/playbooks/master.yml"
       ansible.inventory_path = "ansible/inventory/hosts.ini"
       ansible.limit = "master"
-      ansible.extra_vars = { "node_role": "master" }
+      # ansible.extra_vars = { "node_role": "master" }
     end
   end
 
+  N = 2
   # Define the worker nodes
-  (1..2).each do |i|
+  (1..N).each do |i|
     config.vm.define "worker#{i}" do |worker|
       worker.vm.hostname = "k3s-worker#{i}"
       worker.vm.network "private_network", ip: "192.168.56.#{10 + i}"
@@ -31,12 +32,15 @@ Vagrant.configure("2") do |config|
         vb.cpus = 2
       end
 
-      # Provisioning with Ansible
-      worker.vm.provision "ansible" do |ansible|
-        ansible.playbook = "ansible/playbooks/workers.yml"
-        ansible.inventory_path = "ansible/inventory/hosts.ini"
-        ansible.limit = "worker#{i}"
-        ansible.extra_vars = { "node_role": "worker" }
+      # Provisioning with Ansible: Only execute once the Ansible
+      # provisioner, when all the workers are up and ready.
+      if i == N
+        worker.vm.provision "ansible" do |ansible|
+          ansible.playbook = "ansible/playbooks/workers.yml"
+          ansible.inventory_path = "ansible/inventory/hosts.ini"
+          ansible.limit = "all"
+          # ansible.extra_vars = { "node_role": "worker" }
+        end
       end
     end
   end
