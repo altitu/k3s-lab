@@ -1,11 +1,11 @@
 ---
-- hosts: workers
+- hosts: master
   become: yes
-  
+
   environment:
     PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
     KUBECONFIG: "/etc/rancher/k3s/k3s.yaml"
 
   roles:
     - ../roles/common
-    - ../roles/k3s-worker
+    - ../roles/k3s-master

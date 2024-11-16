@@ -11,14 +11,6 @@ Vagrant.configure("2") do |config|
       vb.memory = "1024"
       vb.cpus = 2
     end
-
-    # Provisioning with Ansible
-    master.vm.provision "ansible" do |ansible|
-      ansible.playbook = "ansible/playbooks/master.yml"
-      ansible.inventory_path = "ansible/inventory/hosts.ini"
-      ansible.limit = "master"
-      # ansible.extra_vars = { "node_role": "master" }
-    end
   end
 
   N = 2
@@ -30,17 +22,6 @@ Vagrant.configure("2") do |config|
       worker.vm.provider "virtualbox" do |vb|
         vb.memory = "1024"
         vb.cpus = 2
-      end
-
-      # Provisioning with Ansible: Only execute once the Ansible
-      # provisioner, when all the workers are up and ready.
-      if i == N
-        worker.vm.provision "ansible" do |ansible|
-          ansible.playbook = "ansible/playbooks/workers.yml"
-          ansible.inventory_path = "ansible/inventory/hosts.ini"
-          ansible.limit = "all"
-          # ansible.extra_vars = { "node_role": "worker" }
-        end
       end
     end
   end

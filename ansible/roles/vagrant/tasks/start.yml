@@ -1,0 +1,5 @@
+---
+- name: Start Vagrant VMs
+  command:
+    cmd: "vagrant up --no-tty"
+    chdir: "{{ playbook_dir }}/.."

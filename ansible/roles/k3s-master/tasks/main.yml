@@ -1,6 +1,6 @@
 ---
 - name: Install K3s master
-  shell: curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644
+  shell: "curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644 --tls-san {{ hostvars[inventory_hostname].ansible_host }} --node-ip={{ ansible_host }}"
   become: yes
 
 - name: Get K3s token
@@ -19,3 +19,62 @@
     src: "/tmp/k3s_token"
     dest: "/tmp/k3s_token"
     flat: true
+
+- name: Install Git
+  dnf:
+    name: git
+    state: present
+
+- name: Download Helm installation script
+  get_url:
+    url: https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+    dest: /tmp/get_helm.sh
+    mode: '0755'
+
+- name: Install Helm
+  shell: "PATH=$PATH:/usr/local/bin /tmp/get_helm.sh"
+  args:
+    creates: /usr/local/bin/helm
+
+- name: Delete Helm installation script
+  file:
+    path: /tmp/get_helm.sh
+    state: absent
+
+- name: Install required kubernetes.core python host module
+  shell:
+    cmd: "python -m ensurepip && python -m pip install kubernetes kubernetes-validate jsonpatch pyYaml"
+
+- name: Label the Master node
+  command:
+    cmd: "kubectl label node k3s-master node-role.kubernetes.io/master=master --overwrite=true"
+
+- name: Taint the master node as non-schedulable
+  command:
+    cmd: "kubectl taint nodes k3s-master node-role.kubernetes.io/master=:NoSchedule --overwrite=true"
+
+#- name: DEBUG
+#  debug:
+#    msg: "{{ hostvars['localhost']['ansible_user_dir'] }}"
+
+- name: Prepare kubeconfig file for remote host
+  block:
+  - copy:
+      remote_src: true
+      src: "/etc/rancher/k3s/k3s.yaml"
+      dest: "/tmp/k3s.yaml"
+  - lineinfile:
+      path: "/tmp/k3s.yaml"
+      search_string: 'server: https://127.0.0.1:6443'
+      line: "    server: https://{{ ansible_host }}:6443"
+
+- name: Fetch kube config file on host to be used with kubectl
+  fetch:
+    src: "/tmp/k3s.yaml"
+    dest: "{{ hostvars['localhost']['ansible_user_dir'] }}/.kube/config"
+    flat: true
+
+- name: Delete temporary kubeconfig file
+  file:
+    path: "/tmp/k3s.yaml"
+    state: absent

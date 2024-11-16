@@ -1,0 +1,58 @@
+---
+- name: Start Vagrant VMs and configure localhost kubeconfig
+  hosts: localhost
+  connection: local
+  #gather_facts: false
+  roles:
+  - role: vagrant
+  tags: start
+
+- name: K3s Master configuration
+  become: true
+  hosts: master
+  environment:
+    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
+    KUBECONFIG: "/etc/rancher/k3s/k3s.yaml"
+  roles:
+  - common
+  - k3s-master
+  tags: k3s-config
+
+- name: K3s Workers configuration
+  become: true
+  hosts: workers
+  environment:
+    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
+    KUBECONFIG: "/etc/rancher/k3s/k3s.yaml"
+  roles:
+  - role: common
+  - role: k3s-worker
+  tags: k3s-config
+
+- name: K3s Master Post-worker configuration
+  become: true
+  hosts: master
+  environment:
+    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
+    KUBECONFIG: "/etc/rancher/k3s/k3s.yaml"
+  roles:
+  - k3s-master-2
+  tags: k3s-config
+
+- name: Grafana setup
+  become: true
+  hosts: master
+  environment:
+    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
+    KUBECONFIG: "/etc/rancher/k3s/k3s.yaml"
+  roles:
+  - role: grafana
+  tags: configure_grafana
+
+- name: Halt and Destroy Vagrant VMs
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+    - role: vagrant
+  tags: destroy
