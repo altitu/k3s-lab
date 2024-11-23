@@ -1,0 +1,4 @@
+adminUser: admin
+adminPassword: password
+
+#from https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml

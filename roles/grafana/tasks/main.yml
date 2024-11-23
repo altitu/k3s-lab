@@ -1,4 +1,9 @@
 ---
+- name: Copy values.yaml Grafana file
+  copy:
+    src: values.yaml
+    dest: /tmp/grafana-values.yaml
+
 - name: Deploy Grafana using Helm
   become: yes
   kubernetes.core.helm:
@@ -7,3 +12,10 @@
     chart_ref: grafana
     release_namespace: monitoring
     create_namespace: true
+    values_files:
+      - /tmp/grafana-values.yaml
+
+- name: Delete unused values.yaml file
+  file:
+    path: /tmp/grafana-values.yaml
+    state: absent
