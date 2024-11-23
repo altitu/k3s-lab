@@ -1,8 +1,0 @@
----
-- name: Vagrant up
-  include_tasks: start.yml
-  tags: start
-
-- name: Vagrant halt && vagrant destroy -f
-  include_tasks: stop-and-destroy.yml
-  tags: destroy

@@ -26,6 +26,7 @@
 You will be prompted for a password, by default Vagrant uses `vagrant` for its user `vagrant`.
 - To know the state of you VMs, you can run `vagrant status`
 - To test the grafana installation, you can `vagrant ssh master` then `kubectl get pods -A | grep grafana`
+- To assess the presence of grafana
 
 ## Exploring the VMs
 
@@ -41,11 +42,12 @@ The result will be a Kubernetes environment with K3s installed on the master and
 
 # Tips
 ## Adding Grafana
-- `kubectl `
+- `kubectl port-forward svc/grafana 8080:80 --address 127.0.0.1 -n monitoring`
 to get grafana credentials:
-- `kubectl -n monitoring get secret grafana -o yaml`
-then
-- ` echo mybase64msg | base64 -d`
+- `kubectl get secrets -n monitoring grafana --template='{{ index .data "admin-user" | base64decode }}'`.
+- `kubectl get secrets -n monitoring grafana --template='{{ index .data "admin-password" | base64decode }}'`.
+
+Vagrant need eth0 for its Nat (when we do `vagrant ssh master`) so flannel is configured to use eth1.
 
 - the ansible.cfg file automatically specify `-u vagrant -i ansible/inventory/hosts.ini` and there is no need for `-k` because of the vagrant ssh private_key defined in the inventory.
 - To automaticaly add the structure of the Grafana role, we placed ourselves in `ansible/roles` and Ran `ansible-galaxy init grafana`.

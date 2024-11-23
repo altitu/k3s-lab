@@ -2,9 +2,9 @@
 - name: Halt Vagrant VMs
   command:
     cmd: "vagrant halt --no-tty"
-    chdir: "{{ playbook_dir }}/.."
+    chdir: "{{ playbook_dir }}"
 
 - name: Destroy Vagrant VMs
   command:
     cmd: "vagrant destroy -f --no-tty"
-    chdir: "{{ playbook_dir }}/.."
+    chdir: "{{ playbook_dir }}"

@@ -1,6 +1,6 @@
 ---
 - name: Install K3s master
-  shell: "curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644 --tls-san {{ hostvars[inventory_hostname].ansible_host }} --node-ip={{ ansible_host }}"
+  shell: "curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644 --tls-san {{ hostvars[inventory_hostname].ansible_host }} --node-ip={{ ansible_host }} --flannel-iface=eth1"
   become: yes
 
 - name: Get K3s token

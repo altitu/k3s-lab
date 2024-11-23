@@ -1,0 +1,9 @@
+---
+- name: Deploy Grafana using Helm
+  become: yes
+  kubernetes.core.helm:
+    name: grafana
+    chart_repo_url: https://grafana.github.io/helm-charts
+    chart_ref: grafana
+    release_namespace: monitoring
+    create_namespace: true

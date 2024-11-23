@@ -4,7 +4,7 @@
   connection: local
   #gather_facts: false
   roles:
-  - role: vagrant
+  - role: vagrant-start
   tags: start
 
 - name: K3s Master configuration
@@ -47,12 +47,12 @@
     KUBECONFIG: "/etc/rancher/k3s/k3s.yaml"
   roles:
   - role: grafana
-  tags: configure_grafana
+  tags: grafana-config
 
 - name: Halt and Destroy Vagrant VMs
   hosts: localhost
   connection: local
   gather_facts: false
   roles:
-    - role: vagrant
+    - role: vagrant-halt-and-destroy
   tags: destroy
