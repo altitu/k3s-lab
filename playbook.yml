@@ -20,7 +20,7 @@
 
 - name: K3s Workers configuration
   become: true
-  hosts: workers
+  hosts: worker
   environment:
     PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
     KUBECONFIG: "/etc/rancher/k3s/k3s.yaml"

@@ -9,7 +9,7 @@
 ## Project Structure
 
 - `Vagrantfile`: Defines the VM environment with master and worker nodes.
-- `ansible/`: Contains Ansible inventory, playbooks, and roles.
+- this folder: Contains Ansible inventory, playbooks, and roles.
 - `inventory/hosts.ini`: Inventory file defining master and worker IPs.
 - `roles/`: Organized by tasks: `common`, `k3s-master`, `k3s-worker` and others.
 
