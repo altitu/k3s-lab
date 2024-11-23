@@ -46,6 +46,7 @@ The result will be a Kubernetes environment with K3s installed on the master and
 to get grafana credentials:
 - `kubectl get secrets -n monitoring grafana --template='{{ index .data "admin-user" | base64decode }}'`.
 - `kubectl get secrets -n monitoring grafana --template='{{ index .data "admin-password" | base64decode }}'`.
+Default credentials are currently set to admin:password.
 
 Vagrant need eth0 for its Nat (when we do `vagrant ssh master`) so flannel is configured to use eth1.
 
