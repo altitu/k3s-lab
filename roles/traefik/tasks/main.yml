@@ -1,0 +1,39 @@
+---
+- name: Apply Grafana ingress
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: grafana-ingress
+        namespace: monitoring
+        annotations:
+          traefik.ingress.kubernetes.io/router.entrypoints: web
+          traefik.ingress.kubernetes.io/router.middlewares: monitoring-grafana-stripprefix@kubernetescrd
+      spec:
+        rules:
+        #- host: '*' #grafana.local
+        - http:
+            paths:
+            - path: /
+              pathType: Prefix
+              backend:
+                service:
+                  name: grafana
+                  port:
+                    number: 80
+
+- name: Apply Traefik middleware
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: traefik.containo.us/v1alpha1
+      kind: Middleware
+      metadata:
+        name: grafana-stripprefix
+        namespace: monitoring
+      spec:
+        stripPrefix:
+          prefixes:
+            - /

@@ -49,6 +49,16 @@
   - role: grafana
   tags: grafana-config
 
+- name: Grafana ingress with Traefik
+  become: true
+  hosts: master
+  environment:
+    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
+    KUBECONFIG: "/etc/rancher/k3s/k3s.yaml"
+  roles:
+  - role: traefik
+  tags: traefik-config
+
 - name: Halt and Destroy Vagrant VMs
   hosts: localhost
   connection: local
