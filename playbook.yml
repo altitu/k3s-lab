@@ -39,6 +39,16 @@
   - k3s-master-2
   tags: k3s-config
 
+- name: Prometheus Setup
+  become: true
+  hosts: master
+  environment:
+    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
+    KUBECONFIG: "/etc/rancher/k3s/k3s.yaml"
+  roles:
+  - role: prometheus
+  tags: prometheus-config
+
 - name: Grafana setup
   become: true
   hosts: master

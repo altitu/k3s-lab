@@ -4,6 +4,19 @@
     src: values.yaml
     dest: /tmp/grafana-values.yaml
 
+- name: Create ConfigMap for Grafana dashboards
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: grafana-dashboards
+        namespace: monitoring
+        labels:
+          grafana_dashboard: "1"
+      binaryData:
+        6417_rev1.json: "{{ lookup('file', 'roles/grafana/files/6417_rev1.json') | b64encode }}"
+
 - name: Deploy Grafana using Helm
   become: yes
   kubernetes.core.helm:
@@ -11,7 +24,6 @@
     chart_repo_url: https://grafana.github.io/helm-charts
     chart_ref: grafana
     release_namespace: monitoring
-    create_namespace: true
     values_files:
       - /tmp/grafana-values.yaml
 
