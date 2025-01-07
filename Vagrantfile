@@ -1,6 +1,7 @@
 Vagrant.configure("2") do |config|
   # Use Rocky Linux as the base image
   config.vm.box = "rockylinux/9"
+  config.vm.box_url = "https://dl.rockylinux.org/vault/rocky/9.4/images/x86_64/Rocky-9-Vagrant-Vbox-9.4-20240509.0.x86_64.box"
   config.vm.box_check_update = true  # Check for updates each time
 
   # Define the master node
