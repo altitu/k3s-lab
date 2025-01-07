@@ -15,7 +15,7 @@
 
 ## Deployment Steps
 
-1. Run `ansible-playbook ansible/playbook.yml --skip-tags destroy` to create the VMs and run the deployment.
+1. Run `ansible-playbook playbook.yml --skip-tags destroy` to create the VMs and run the deployment.
 2. The Vagrantfile is configured provisione a defined number of VM.
 (The VMs groups can be found in the Ansible inventory).
 
