@@ -35,6 +35,10 @@ You will be prompted for a password, by default Vagrant uses `vagrant` for its u
 
 ## Stoping the VMs and reseting the VM
 
+- Run `ansible-playbook playbook.yml --tags destroy` to halt and destroy the VMs.
+
+or, alternatively
+
 - To stop the VMs, run `vagrant halt`.
 - To delete all data on the VMs, run `vagrant destroy -f`
 
