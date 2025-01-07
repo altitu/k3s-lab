@@ -22,7 +22,7 @@
 ## Debugging
 
 - If you would like to execute a part of the deployment, or simply to test your changes, you can, simply run
-`ansible-playbook ansible/playbooks/master.yml`.
+`ansible-playbook playbooks/master.yml`.
 You will be prompted for a password, by default Vagrant uses `vagrant` for its user `vagrant`.
 - To know the state of you VMs, you can run `vagrant status`
 - To test the grafana installation, you can `vagrant ssh master` then `kubectl get pods -A | grep grafana`
@@ -50,6 +50,6 @@ Default credentials are currently set to admin:password.
 
 Vagrant need eth0 for its Nat (when we do `vagrant ssh master`) so flannel is configured to use eth1.
 
-- the ansible.cfg file automatically specify `-u vagrant -i ansible/inventory/hosts.ini` and there is no need for `-k` because of the vagrant ssh private_key defined in the inventory.
+- the ansible.cfg file automatically specify `-u vagrant -i inventory/hosts.ini` and there is no need for `-k` because of the vagrant ssh private_key defined in the inventory.
 - To automaticaly add the structure of the Grafana role, we placed ourselves in `ansible/roles` and Ran `ansible-galaxy init grafana`.
 - If you wanted to install another collection to your playbook, you could do so by running `ansible-galaxy collection install kubernetes.core` for example. To delete it, run 2 commandes: `rm -rf ~/.ansible/collections/ansible_collections/kubernetes.core-*.info` and `rm -rf ~/.ansible/collections/ansible_collections/kubernetes/core`.
