@@ -1,0 +1,70 @@
+---
+- name: Create the argocd namespace
+  kubernetes.core.k8s:
+    name: argocd
+    api_version: v1
+    kind: Namespace
+    state: present
+
+# Install the Argo CD v2.13.5 manifest
+
+- name: Download the argocd v2.13.5 manifest to the cluster.
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/argoproj/argo-cd/v2.13.5/manifests/install.yaml
+    dest: ~/argocd-manifest.yaml
+    mode: '0664'
+
+- name: Apply the argocd v2.13.5 manifest to the cluster.
+  kubernetes.core.k8s:
+    state: present
+    src: ~/argocd-manifest.yaml
+    namespace: argocd
+
+# Modifying configmap
+- name: Allowing insecure connection to the Argo CD UI and setting rootpath on /argocd
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: argocd-cmd-params-cm
+        namespace: argocd
+      data:
+        server.insecure: "true"
+        server.rootpath: "/argo-cd"
+
+# Restart argocd-server deployment
+- name: Restart argocd-server deployment
+  ansible.builtin.shell: kubectl rollout restart deployment argocd-server -n argocd
+
+- name: Wait for the state of the argocd-server pod to be ready
+  kubernetes.core.k8s_info:
+    kind: Pod
+    namespace: argocd
+    label_selectors:
+      - "app.kubernetes.io/name=argocd-server"
+  register: argocd_server_info
+  until: >
+    (argocd_server_info.resources[0].status.conditions
+      | selectattr('type', 'equalto', 'Ready')
+      | map(attribute='status')
+      | list)[0] == "True"
+  retries: 20
+  delay: 15
+
+# Add Traefik ingressroute to handle /argocd path
+- name: Add Traefik ingressroute to handle the /argocd route
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('file', 'files/argocd-ingressroute.yaml') | from_yaml }}"
+    namespace: argocd
+
+# Display the Argo CD UI password
+- block:
+  - name: Get Argo CD default generated password
+    ansible.builtin.shell: echo $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 --decode)
+    register: argocd_default_pass
+  - name: Display Argo CD default generated password
+    debug:
+      msg: "{{ argocd_default_pass.stdout }}"
