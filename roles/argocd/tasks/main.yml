@@ -8,13 +8,13 @@
 
 # Install the Argo CD v2.13.5 manifest
 
-- name: Download the argocd v2.13.5 manifest to the cluster.
+- name: Download the argocd v2.13.5 manifest to the cluster
   ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/argoproj/argo-cd/v2.13.5/manifests/install.yaml
     dest: ~/argocd-manifest.yaml
     mode: '0664'
 
-- name: Apply the argocd v2.13.5 manifest to the cluster.
+- name: Apply the argocd v2.13.5 manifest to the cluster
   kubernetes.core.k8s:
     state: present
     src: ~/argocd-manifest.yaml
@@ -54,7 +54,7 @@
   delay: 15
 
 # Add Traefik ingressroute to handle /argocd path
-- name: Add Traefik ingressroute to handle the /argocd route
+- name: Add Traefik ingressroute to handle the /argo-cd route
   kubernetes.core.k8s:
     state: present
     definition: "{{ lookup('file', 'files/argocd-ingressroute.yaml') | from_yaml }}"
