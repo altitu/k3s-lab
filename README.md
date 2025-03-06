@@ -37,7 +37,7 @@ You can also skip a tag on which you are working on with `--skip-tags` instead.
 - To test the grafana installation, you can `vagrant ssh master` then `kubectl get pods -A | grep grafana`
 - To assess the presence of grafana
 
-Known issue (maybe fixed ?): If you frequently destroying and rebuilding the VMs with Virtualbox as a Vagrant backend, you may face an error stating that your ram is too low.
+Known issue (maybe fixed ?): If you are frequently destroying and rebuilding the VMs with Virtualbox as a Vagrant backend, you may face an error stating that your ram is too low.
 You should in this case either restart (impractical) or drop the kernel cache `echo 3 | sudo tee /proc/sys/vm/drop_caches` (less impractical).
 
 ## Exploring the VMs
